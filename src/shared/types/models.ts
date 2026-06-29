@@ -2,8 +2,13 @@ import type {
 	CertificateLanguage,
 	CertificateType,
 	EmploymentStatus,
+	EquipmentStatus,
 	InventoryStatus,
 	OperationType,
+	ProjectStatus,
+	ServicePriority,
+	ServiceStatus,
+	ServiceType,
 	UserRole,
 	UserStatus,
 } from "./enums";
@@ -98,6 +103,41 @@ export interface RolePermission {
 	role: UserRole;
 	label: string;
 	permissions: string[];
+}
+
+export interface Project {
+	id: string;
+	name: string;
+	client: string;
+	manager: string;
+	status: ProjectStatus;
+	budget: number;
+	progress: number;
+	startDate: string;
+	endDate: string;
+}
+
+export interface Equipment {
+	id: string;
+	name: string;
+	type: string;
+	serialNumber: string;
+	location: string;
+	responsiblePerson: string;
+	status: EquipmentStatus;
+	commissionDate: string;
+}
+
+export interface ServiceRequest {
+	id: string;
+	title: string;
+	project: string;
+	type: ServiceType;
+	priority: ServicePriority;
+	status: ServiceStatus;
+	assignee: string;
+	requestDate: string;
+	dueDate: string;
 }
 
 export type { CertificateLanguage, CertificateType };

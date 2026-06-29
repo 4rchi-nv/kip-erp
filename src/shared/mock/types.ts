@@ -6,10 +6,13 @@ import type {
 	ChartDataPoint,
 	DashboardStats,
 	Employee,
+	Equipment,
 	InventoryItem,
+	Project,
 	ProjectDataPoint,
 	ReportDefinition,
 	RolePermission,
+	ServiceRequest,
 	SystemUser,
 } from "#/types";
 
@@ -54,6 +57,9 @@ export interface MockDatabase {
 	reports: ReportDefinition[];
 	users: SystemUser[];
 	rolePermissions: RolePermission[];
+	projects: Project[];
+	equipment: Equipment[];
+	serviceRequests: ServiceRequest[];
 	dashboard: MockDashboardData;
 	notifications: MockNotification[];
 	reference: MockReferenceData;

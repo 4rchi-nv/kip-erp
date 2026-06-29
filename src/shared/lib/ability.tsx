@@ -37,9 +37,9 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Subject, Action[]>> = {
 		certificate: ["read"],
 		report: ["all"],
 		user: ["read"],
-		project: ["read"],
-		service: ["read"],
-		equipment: ["read"],
+		project: ["all"],
+		service: ["all"],
+		equipment: ["all"],
 	},
 	accountant: {
 		dashboard: ["read"],
@@ -50,8 +50,8 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Subject, Action[]>> = {
 		report: ["all"],
 		user: [],
 		project: ["read"],
-		service: [],
-		equipment: [],
+		service: ["read"],
+		equipment: ["read"],
 	},
 	hr_manager: {
 		dashboard: ["read"],
@@ -86,7 +86,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Subject, Action[]>> = {
 		report: ["all"],
 		user: [],
 		project: ["all"],
-		service: ["read"],
+		service: ["read", "create", "update"],
 		equipment: ["read"],
 	},
 	engineer: {
@@ -98,7 +98,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Subject, Action[]>> = {
 		report: ["read"],
 		user: [],
 		project: ["read"],
-		service: ["read"],
+		service: ["read", "create", "update"],
 		equipment: ["read"],
 	},
 };

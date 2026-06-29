@@ -122,7 +122,7 @@ export function OperationFormDialog({
 						render={({ field }) => (
 							<TextField
 								{...field}
-								label="Сумма, ₽"
+								label="Сумма, TMT"
 								type="number"
 								fullWidth
 								onChange={(event) => field.onChange(Number(event.target.value) || 0)}

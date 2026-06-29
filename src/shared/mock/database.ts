@@ -1,28 +1,22 @@
-import type {
-	ActivityItem,
-	CashOperation,
-	Employee,
-	InventoryItem,
-} from "#/types";
+import type { ActivityItem, CashOperation, Employee, InventoryItem } from "#/types";
 import { createMockId } from "./helpers";
 import {
 	seedCertificates,
 	seedEmployees,
+	seedEquipment,
 	seedInventory,
 	seedMonthlyChart,
 	seedNotifications,
+	seedProjectRecords,
 	seedRecentActivity,
 	seedReference,
 	seedReports,
 	seedRolePermissions,
+	seedServiceRequests,
 	seedTransactions,
 	seedUsers,
 } from "./kip-seed";
-import type {
-	MockCertificateRecord,
-	MockDashboardData,
-	MockDatabase,
-} from "./types";
+import type { MockCertificateRecord, MockDashboardData, MockDatabase } from "./types";
 
 const inventoryUnitValue: Record<string, number> = {
 	"PLC / Контроллеры": 12_500,
@@ -83,7 +77,9 @@ export function computeDashboardStats(
 	const activeProjects = new Set(
 		transactions
 			.map((operation) => operation.project)
-			.filter((project) => project !== "Сервисное обслуживание" && project !== "Административные расходы"),
+			.filter(
+				(project) => project !== "Сервисное обслуживание" && project !== "Административные расходы",
+			),
 	).size;
 	const warehouseStockValue = Math.round(
 		inventory.reduce(
@@ -131,6 +127,9 @@ export function createSeedDatabase(): MockDatabase {
 		reports: structuredClone(seedReports),
 		users: structuredClone(seedUsers),
 		rolePermissions: structuredClone(seedRolePermissions),
+		projects: structuredClone(seedProjectRecords),
+		equipment: structuredClone(seedEquipment),
+		serviceRequests: structuredClone(seedServiceRequests),
 		notifications: structuredClone(seedNotifications),
 		reference: structuredClone(seedReference),
 		dashboard: buildDashboard(
@@ -156,12 +155,7 @@ export function createActivityItem(description: string, module: string): Activit
 export function refreshDashboard(db: MockDatabase): void {
 	db.dashboard = {
 		...db.dashboard,
-		stats: computeDashboardStats(
-			db.transactions,
-			db.inventory,
-			db.certificates,
-			db.notifications,
-		),
+		stats: computeDashboardStats(db.transactions, db.inventory, db.certificates, db.notifications),
 		projectChart: computeProjectChart(db.transactions),
 	};
 }

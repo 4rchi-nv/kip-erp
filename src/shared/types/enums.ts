@@ -40,3 +40,35 @@ export type CertificateType = (typeof CERTIFICATE_TYPES)[number];
 export const CERTIFICATE_LANGUAGES = ["ru", "en"] as const;
 
 export type CertificateLanguage = (typeof CERTIFICATE_LANGUAGES)[number];
+
+export const PROJECT_STATUSES = ["planning", "in_progress", "on_hold", "completed"] as const;
+
+export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+
+export const EQUIPMENT_STATUSES = [
+	"operational",
+	"maintenance",
+	"repair",
+	"decommissioned",
+] as const;
+
+export type EquipmentStatus = (typeof EQUIPMENT_STATUSES)[number];
+
+export const SERVICE_STATUSES = ["new", "in_progress", "completed", "cancelled"] as const;
+
+export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
+
+export const SERVICE_PRIORITIES = ["low", "medium", "high", "urgent"] as const;
+
+export type ServicePriority = (typeof SERVICE_PRIORITIES)[number];
+
+export const SERVICE_TYPES = [
+	"installation",
+	"commissioning",
+	"maintenance",
+	"calibration",
+	"repair",
+	"training",
+] as const;
+
+export type ServiceType = (typeof SERVICE_TYPES)[number];

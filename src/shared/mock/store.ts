@@ -1,5 +1,14 @@
 import { computeInventoryStatus } from "#/entities/warehouse";
-import type { CashOperation, Employee, InventoryItem, ReportDefinition, SystemUser } from "#/types";
+import type {
+	CashOperation,
+	Employee,
+	Equipment,
+	InventoryItem,
+	Project,
+	ReportDefinition,
+	ServiceRequest,
+	SystemUser,
+} from "#/types";
 import {
 	createActivityItem,
 	createSeedDatabase,
@@ -28,7 +37,10 @@ function loadFromStorage(): MockDatabase | null {
 		if (!raw) {
 			return null;
 		}
-		return JSON.parse(raw) as MockDatabase;
+		const parsed = JSON.parse(raw) as Partial<MockDatabase>;
+		// Backfill collections added after the stored snapshot was created so that
+		// older persisted databases stay compatible with new modules.
+		return { ...createSeedDatabase(), ...parsed } as MockDatabase;
 	} catch {
 		return null;
 	}
@@ -88,7 +100,10 @@ export const mockStore = {
 			const label = payload.type === "income" ? "поступление" : "расход";
 			prependActivity(
 				database,
-				`Добавлена кассовая операция: ${label} ${payload.amount.toLocaleString("ru-RU")} ₽`,
+				`Добавлена кассовая операция: ${label} ${payload.amount.toLocaleString("en-TM", {
+					style: "currency",
+					currency: "TMT",
+				})} TMT`,
 				"Финансы",
 			);
 			refreshDashboard(database);
@@ -312,7 +327,11 @@ export const mockStore = {
 		};
 		mutate((database) => {
 			database.certificates = [certificate, ...database.certificates];
-			prependActivity(database, `Сформирован сертификат для ${certificate.employeeName}`, "Сертификаты");
+			prependActivity(
+				database,
+				`Сформирован сертификат для ${certificate.employeeName}`,
+				"Сертификаты",
+			);
 			refreshDashboard(database);
 		});
 		return certificate;
@@ -345,6 +364,119 @@ export const mockStore = {
 				database,
 				`Удалён сертификат${certificate ? ` для ${certificate.employeeName}` : ""}`,
 				"Сертификаты",
+			);
+			refreshDashboard(database);
+		});
+	},
+
+	// Projects
+	createProject(payload: Omit<Project, "id">): Project {
+		const project: Project = { id: createMockId("prj"), ...payload };
+		mutate((database) => {
+			database.projects = [project, ...database.projects];
+			prependActivity(database, `Добавлен проект: «${project.name}»`, "Проекты");
+			refreshDashboard(database);
+		});
+		return project;
+	},
+
+	updateProject(id: string, payload: Partial<Omit<Project, "id">>): Project {
+		let updated!: Project;
+		mutate((database) => {
+			database.projects = database.projects.map((project) => {
+				if (project.id !== id) {
+					return project;
+				}
+				updated = { ...project, ...payload };
+				return updated;
+			});
+			prependActivity(database, `Обновлён проект: «${updated.name}»`, "Проекты");
+			refreshDashboard(database);
+		});
+		return updated;
+	},
+
+	deleteProject(id: string): void {
+		mutate((database) => {
+			const project = database.projects.find((entry) => entry.id === id);
+			database.projects = database.projects.filter((entry) => entry.id !== id);
+			prependActivity(database, `Удалён проект${project ? `: «${project.name}»` : ""}`, "Проекты");
+			refreshDashboard(database);
+		});
+	},
+
+	// Equipment
+	createEquipment(payload: Omit<Equipment, "id">): Equipment {
+		const equipment: Equipment = { id: createMockId("eqp"), ...payload };
+		mutate((database) => {
+			database.equipment = [equipment, ...database.equipment];
+			prependActivity(database, `Добавлено оборудование: «${equipment.name}»`, "Оборудование");
+		});
+		return equipment;
+	},
+
+	updateEquipment(id: string, payload: Partial<Omit<Equipment, "id">>): Equipment {
+		let updated!: Equipment;
+		mutate((database) => {
+			database.equipment = database.equipment.map((equipment) => {
+				if (equipment.id !== id) {
+					return equipment;
+				}
+				updated = { ...equipment, ...payload };
+				return updated;
+			});
+			prependActivity(database, `Обновлено оборудование: «${updated.name}»`, "Оборудование");
+		});
+		return updated;
+	},
+
+	deleteEquipment(id: string): void {
+		mutate((database) => {
+			const equipment = database.equipment.find((entry) => entry.id === id);
+			database.equipment = database.equipment.filter((entry) => entry.id !== id);
+			prependActivity(
+				database,
+				`Удалено оборудование${equipment ? `: «${equipment.name}»` : ""}`,
+				"Оборудование",
+			);
+		});
+	},
+
+	// Service requests
+	createServiceRequest(payload: Omit<ServiceRequest, "id">): ServiceRequest {
+		const request: ServiceRequest = { id: createMockId("srv"), ...payload };
+		mutate((database) => {
+			database.serviceRequests = [request, ...database.serviceRequests];
+			prependActivity(database, `Создана сервисная заявка: «${request.title}»`, "Сервис");
+			refreshDashboard(database);
+		});
+		return request;
+	},
+
+	updateServiceRequest(id: string, payload: Partial<Omit<ServiceRequest, "id">>): ServiceRequest {
+		let updated!: ServiceRequest;
+		mutate((database) => {
+			database.serviceRequests = database.serviceRequests.map((request) => {
+				if (request.id !== id) {
+					return request;
+				}
+				updated = { ...request, ...payload };
+				return updated;
+			});
+			prependActivity(database, `Обновлена сервисная заявка: «${updated.title}»`, "Сервис");
+			refreshDashboard(database);
+		});
+		return updated;
+	},
+
+	deleteServiceRequest(id: string): void {
+		mutate((database) => {
+			const request = database.serviceRequests.find((entry) => entry.id === id);
+			database.serviceRequests = database.serviceRequests.filter((entry) => entry.id !== id);
+			prependActivity(
+				database,
+				`Удалена сервисная заявка${request ? `: «${request.title}»` : ""}`,
+				"Сервис",
 			);
 			refreshDashboard(database);
 		});

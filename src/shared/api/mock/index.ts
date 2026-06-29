@@ -11,12 +11,15 @@ export { mockCertificatesApi } from "./certificates";
 export { mockDashboardApi } from "./dashboard";
 export { mockDemoApi } from "./demo";
 export { mockEmployeesApi } from "./employees";
+export { mockEquipmentApi } from "./equipment";
 export { applyListQuery, toItemResponse, toListResponse, toVoidResponse } from "./list-utils";
+export { mockProjectsApi } from "./projects";
 export type { FinanceReference, WarehouseReference } from "./reference";
 export { mockReferenceApi } from "./reference";
 export type { CreateReportPayload, UpdateReportPayload } from "./reports";
 export { mockReportsApi } from "./reports";
 export { assertFound, withMockRequest } from "./request";
+export { mockServiceApi } from "./service";
 export type { ExportTransactionsParams } from "./transactions";
 export { mockTransactionsApi } from "./transactions";
 export {
